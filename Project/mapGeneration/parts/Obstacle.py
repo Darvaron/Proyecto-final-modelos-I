@@ -1,6 +1,7 @@
 # Descripción: Objetos del entorno
 # Autores: David Armando Rodríguez Varón, Juan Sebastián Sánchez Tabares
 
+import pygame
 import random
 import Project.Main
 from shapely.geometry import Point
@@ -13,12 +14,13 @@ class Obstacle:
         self.posx = 0
         self.posy = 0
         self.type = None
+        self.image = None
         self.generate_obs(hollows)
 
     def generate_obs(self, hollows):
-        posx = random.randint(0, Project.Main.displayWidth + 1)
-        posy = random.randint(0, Project.Main.displayHeight + 1)
-        pos = Point(posx,posy)
+        self.posx = random.randint(0, Project.Main.displayWidth + 1)
+        self.posy = random.randint(0, Project.Main.displayHeight + 1)
+        pos = Point(self.posx, self.posy)
         validated = True
         for h in hollows:
             polygon = Polygon(h.corners)
@@ -26,4 +28,6 @@ class Obstacle:
                 validated = False
         if not validated:
             self.generate_obs(hollows)
-
+        self.type = random.choice(['stone', 'spike'])
+        #self.image = pygame.image.load('Project/resources/' + self.type + '.png') Falta imagen
+        print('Obstaculo:', self.type)

@@ -2,6 +2,7 @@
 # Autores: David Armando Rodríguez Varón, Juan Sebastián Sánchez Tabares
 
 import pygame
+import Project.Match
 
 displayWidth = 1366
 displayHeight = 768
@@ -49,6 +50,10 @@ def quit_game():
     quit()
 
 
+def new_game():
+    match = Project.Match.Match()
+
+
 def intro():
     intro = True
     while intro:
@@ -58,10 +63,11 @@ def intro():
 
         display.fill(white)
         message_display('Menu', 'freesansbold.ttf', 115, displayWidth / 2, displayHeight / 2)
-        button('Empezar', 400, 500, 100, 50, green, brightGreen, None)
-        button('Salir', 850, 500, 100, 50, red, brightRed, None)
+        button('Empezar', 400, 500, 100, 50, green, brightGreen,
+               new_game)  # Falta configurar para que solo se pueda presionar una vez
+        button('Salir', 850, 500, 100, 50, red, brightRed, quit_game)
         pygame.display.update()
-        clock.tick(15)
+        clock.tick(10)
 
 
 def main():

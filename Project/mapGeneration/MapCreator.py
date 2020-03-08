@@ -2,7 +2,6 @@
 # Autores: David Armando Rodríguez Varón, Juan Sebastián Sánchez Tabares
 
 from abc import ABC, abstractmethod
-
 from Project.mapGeneration.Map import Map
 
 
