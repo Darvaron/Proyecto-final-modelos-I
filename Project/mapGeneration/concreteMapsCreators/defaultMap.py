@@ -12,7 +12,7 @@ from Project.mapGeneration.parts.PowerUp import PowerUp
 class defaultMap(MapCreator):
 
     def build_hollows(self):
-        quantity = random.randint(0, 5)
+        quantity = random.randint(0, 2)
         hollows = []
         for n in range(quantity):
             hollows.append(Hollow())
@@ -39,4 +39,3 @@ class defaultMap(MapCreator):
         quantity = random.randint(0, 2)
         for n in range(quantity):
             self.map.set_powerups(PowerUp(self.map.hollows))
-        print('Potenciador generado:', quantity)

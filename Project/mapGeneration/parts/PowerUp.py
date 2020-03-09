@@ -27,8 +27,8 @@ class PowerUp:
             polygon = Polygon(h.corners)
             if polygon.contains(pos):
                 validated = False
-        if not validated:
-            self.generate_power_up(hollows)
         self.type = random.choice(['power_up1', 'power_up2'])
         #self.image = pygame.image.load('Project/resources/' + self.type + '.png') Falta imagen
         print('PowerUp:', self.type)
+        if not validated:
+            self.generate_power_up(hollows)

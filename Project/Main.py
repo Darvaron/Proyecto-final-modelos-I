@@ -2,7 +2,9 @@
 # Autores: David Armando Rodríguez Varón, Juan Sebastián Sánchez Tabares
 
 import pygame
+import pygame.gfxdraw
 import Project.Match
+import time
 
 displayWidth = 1366
 displayHeight = 768
@@ -52,6 +54,23 @@ def quit_game():
 
 def new_game():
     match = Project.Match.Match()
+    gameExit = False
+    while not gameExit:
+        gameExit = True
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit_game()
+        n = 0
+        for m in match.map:
+            display.fill(white)
+            for h in m.hollows:
+                pygame.gfxdraw.aapolygon(display, h.corners, black)
+                pygame.gfxdraw.filled_polygon(display, h.corners, black)
+            message_display('Sala ' + str(n), 'freesansbold.ttf', 20, 50, 50)
+            print('Sala', n)
+            n += 1
+            pygame.display.update()
+            time.sleep(0.5)
 
 
 def intro():
@@ -67,7 +86,6 @@ def intro():
                new_game)  # Falta configurar para que solo se pueda presionar una vez
         button('Salir', 850, 500, 100, 50, red, brightRed, quit_game)
         pygame.display.update()
-        clock.tick(10)
 
 
 def main():

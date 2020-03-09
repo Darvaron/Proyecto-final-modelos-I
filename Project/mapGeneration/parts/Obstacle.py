@@ -26,8 +26,9 @@ class Obstacle:
             polygon = Polygon(h.corners)
             if polygon.contains(pos):
                 validated = False
-        if not validated:
-            self.generate_obs(hollows)
         self.type = random.choice(['stone', 'spike'])
         #self.image = pygame.image.load('Project/resources/' + self.type + '.png') Falta imagen
         print('Obstaculo:', self.type)
+        if not validated:
+            self.generate_obs(hollows)
+
