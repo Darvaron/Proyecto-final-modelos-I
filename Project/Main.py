@@ -3,7 +3,7 @@
 
 import pygame
 import pygame.gfxdraw
-import Project.Match
+import Project.Load
 import time
 
 displayWidth = 1366
@@ -53,24 +53,49 @@ def quit_game():
 
 
 def new_game():
-    match = Project.Match.Match()
     gameExit = False
     while not gameExit:
+        load = Project.Load.Load()
         gameExit = True
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 quit_game()
         n = 0
-        for m in match.map:
+        for m in load.map: #Impresion de muestra de todas las salas
             display.fill(white)
+            # Agujeros
             for h in m.hollows:
                 pygame.gfxdraw.aapolygon(display, h.corners, black)
                 pygame.gfxdraw.filled_polygon(display, h.corners, black)
+            # Puertas
+            for door in load.doors:
+                if door.room == m.id: # Si las puertas estan en la misma sala que se imprime
+                    if door.lane == 1:  # Si izquierda
+                        b = 0
+                        pygame.draw.rect(display, green, (b, door.pos, 60, 60))
+                    elif door.lane == 2:  # Si derecha
+                        b = displayWidth - 60
+                        pygame.draw.rect(display, green, (b, door.pos, 60, 60))
+                    elif door.lane == 3:  # Arriba
+                        b = 0
+                        pygame.draw.rect(display, green, (door.pos, b, 60, 60))
+                    else:  # Abajo
+                        b = displayHeight - 60
+                        pygame.draw.rect(display, green, (door.pos, b, 60, 60))
+                    #print('imprimiendo:', b, door.pos)
+            #for d in m.doors:  # Verifica en que linea esta para asignarlo a un borde
+            #Objetos
+            for o in m.obstacles:
+                pygame.draw.circle(display, blue, (o.posx, o.posy), 10)
+            if m.powerUps != None:
+                pygame.draw.rect(display, red, (m.powerUps.posx, m.powerUps.posy, 20, 20))
+
+
             message_display('Sala ' + str(n), 'freesansbold.ttf', 20, 50, 50)
-            print('Sala', n)
+            print('mostrando sala:', m.id)
             n += 1
             pygame.display.update()
-            time.sleep(0.5)
+            time.sleep(1.5)
 
 
 def intro():

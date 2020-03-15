@@ -3,11 +3,14 @@
 
 class Map:
 
+    quantity = 0 #Contador de salas
+
     def __init__(self):
         self.hollows = []
         self.obstacles = []
         self.doors = []
         self.powerUps = None
+        self.id = Map.quantity
 
     def set_hollows(self, hollows):
         self.hollows = hollows

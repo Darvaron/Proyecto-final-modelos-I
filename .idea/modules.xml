@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Proyecto modelos.iml" filepath="$PROJECT_DIR$/.idea/Proyecto modelos.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../../../SelfLearn/UVa/.idea/UVa.iml" filepath="$PROJECT_DIR$/../../../../../SelfLearn/UVa/.idea/UVa.iml" />
       <module fileurl="file://$PROJECT_DIR$/../../../../../SelfLearn/Pygame/Basics/.idea/basics.iml" filepath="$PROJECT_DIR$/../../../../../SelfLearn/Pygame/Basics/.idea/basics.iml" />
     </modules>
   </component>

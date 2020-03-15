@@ -22,8 +22,11 @@ class MapCreator(ABC):
     def build_obstacles(self):
         pass
 
-    def build_doors(self):
+    def build_doors(self, room):
         pass
 
     def build_power_up(self):
+        pass
+
+    def verifier(self):
         pass
