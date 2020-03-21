@@ -11,6 +11,8 @@ class Map:
         self.doors = []
         self.powerUps = None
         self.id = Map.quantity
+        self.textures = []
+        self.hollowsN = 0
 
     def set_hollows(self, hollows):
         self.hollows = hollows
@@ -23,3 +25,9 @@ class Map:
 
     def set_powerups(self, powerUps):
         self.powerUps = powerUps
+
+    def set_textures(self, textures):
+        self.textures = textures
+
+    def set_hollowsN(self, hollowsN):
+        self.hollowsN = hollowsN

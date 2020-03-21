@@ -16,17 +16,20 @@ class MapCreator(ABC):
     def create_map(self):
         self.map = Map()
 
-    def build_hollows(self):
+    def build_hollows(self, displayWidth, displayHeight):
         pass
 
-    def build_obstacles(self):
+    def build_obstacles(self, displayWidtg, displayHeight):
         pass
 
-    def build_doors(self, room):
+    def build_doors(self, room, displayWidth, displayHeight):
         pass
 
-    def build_power_up(self):
+    def build_power_up(self, displayWidth, displayHeight):
         pass
 
     def verifier(self):
+        pass
+
+    def build_extras(self):
         pass

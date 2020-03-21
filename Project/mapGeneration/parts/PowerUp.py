@@ -3,34 +3,41 @@
 
 import pygame
 import random
-import Project.Main
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 
 
 class PowerUp:
+    #all_Powerups = [['0', 'sword'], ['1', 'bow'], ['2', 'helmet'], ['3', 'hat'], ['4', 'apple'],
+    #                ['5', 'glass']]
+    all_Powerups = [['0', 'sword']]
 
-    def __init__(self, hollows):
+    def __init__(self, hollows, displayWidth, displayHeight):
         self.posx = 0
         self.posy = 0
         self.type = None
         self.image = None
-        self.power = None  # Falta añadir algo relacionado con como actua el poder y tipo de poderes
-        self.imageWidth = 20
-        self.imageHeight = 20
-        self.generate_power_up(hollows)
+        self.power = None
+        self.imageWidth = 0
+        self.imageHeight = 0
+        self.generate_power_up(hollows, displayWidth, displayHeight)
 
-    def generate_power_up(self, hollows):
-        self.posx = random.randint(0, Project.Main.displayWidth - self.imageWidth)
-        self.posy = random.randint(0, Project.Main.displayHeight - self.imageHeight)
+    def generate_power_up(self, hollows, displayWidth, displayHeight):
+        self.posx = random.randint(0, displayWidth - self.imageWidth)
+        self.posy = random.randint(0, displayHeight - self.imageHeight)
         pos = Point(self.posx, self.posy)
         validated = True
         for h in hollows:
             polygon = Polygon(h.corners)
             if polygon.contains(pos):
                 validated = False
-        self.type = random.choice(['power_up1', 'power_up2'])
-        # self.image = pygame.image.load('Project/resources/' + self.type + '.png') Falta imagen
-        print('PowerUp:', self.type)
+        self.type = PowerUp.all_Powerups[random.randint(0, len(PowerUp.all_Powerups) - 1)]
+        self.power = self.type[1]
+        self.image = pygame.image.load('./resources/powerups/Item__' + self.type[0] + '.png')
+        size = self.image.get_rect().size
+        self.imageWidth = size[0]
+        self.imageHeight = size[1]
+        self.image = pygame.transform.scale(self.image, ((self.imageWidth * 3), (self.imageHeight * 3)))
+        print('PowerUp:', self.power)
         if not validated:
-            self.generate_power_up(hollows)
+            self.generate_power_up(hollows, displayWidth, displayHeight)

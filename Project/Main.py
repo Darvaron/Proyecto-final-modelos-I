@@ -3,8 +3,8 @@
 
 import pygame
 import pygame.gfxdraw
-import Project.Load
 import time
+from Project.Game import Game
 
 displayWidth = 1366
 displayHeight = 768
@@ -18,6 +18,8 @@ green = (0, 255, 0)
 blue = (0, 0, 255)
 brightGreen = (0, 200, 0)
 brightRed = (200, 0, 0)
+
+pause = False
 
 
 def button(message, x, y, w, h, ico, aco, act=None):
@@ -51,51 +53,62 @@ def quit_game():
     pygame.quit()
     quit()
 
+def unpause():
+    global pause
+    pause = False
 
-def new_game():
-    gameExit = False
-    while not gameExit:
-        load = Project.Load.Load()
-        gameExit = True
+def pausef():
+    global pause
+    while pause:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 quit_game()
-        n = 0
-        for m in load.map: #Impresion de muestra de todas las salas
-            display.fill(white)
-            # Agujeros
-            for h in m.hollows:
-                pygame.gfxdraw.aapolygon(display, h.corners, black)
-                pygame.gfxdraw.filled_polygon(display, h.corners, black)
-            # Puertas
-            for door in load.doors:
-                if door.room == m.id: # Si las puertas estan en la misma sala que se imprime
-                    if door.lane == 1:  # Si izquierda
-                        b = 0
-                        pygame.draw.rect(display, green, (b, door.pos, 60, 60))
-                    elif door.lane == 2:  # Si derecha
-                        b = displayWidth - 60
-                        pygame.draw.rect(display, green, (b, door.pos, 60, 60))
-                    elif door.lane == 3:  # Arriba
-                        b = 0
-                        pygame.draw.rect(display, green, (door.pos, b, 60, 60))
-                    else:  # Abajo
-                        b = displayHeight - 60
-                        pygame.draw.rect(display, green, (door.pos, b, 60, 60))
-                    #print('imprimiendo:', b, door.pos)
-            #for d in m.doors:  # Verifica en que linea esta para asignarlo a un borde
-            #Objetos
-            for o in m.obstacles:
-                pygame.draw.circle(display, blue, (o.posx, o.posy), 10)
-            if m.powerUps != None:
-                pygame.draw.rect(display, red, (m.powerUps.posx, m.powerUps.posy, 20, 20))
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    pause = True
+                    unpause()
+        display.fill(white)
+        message_display('Pausa', 'freesansbold.ttf', 115, displayWidth / 2, displayHeight / 2)
+        button('Continuar', 400, 500, 100, 50, green, brightGreen,
+               unpause)
+        button('Salir', 850, 500, 100, 50, red, brightRed, quit_game)
+        pygame.display.update()
+        clock.tick(10)
 
-
-            message_display('Sala ' + str(n), 'freesansbold.ttf', 20, 50, 50)
-            print('mostrando sala:', m.id)
-            n += 1
-            pygame.display.update()
-            time.sleep(1.5)
+def new_game():
+    global pause
+    gameExit = False
+    game = Game(display, displayWidth, displayHeight)
+    while not gameExit:
+        #Input
+        typped = []
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit_game()
+        key = pygame.key.get_pressed()
+        if key[pygame.K_p]:
+            pause = True
+            pausef()
+        if key[pygame.K_a]:
+            typped.append(1)
+        if key[pygame.K_d]:
+            typped.append(2)
+        if key[pygame.K_w]:
+            typped.append(3)
+        if key[pygame.K_s]:
+            typped.append(4)
+        click = pygame.mouse.get_pressed()
+        attack = False
+        if click[0] == 1:
+            typped.append(5)
+            attack = True
+        game.updateMatch(attack, typped)
+        game.displayMatch()
+        message_display('Vida: ' + str(game.match.player.getlife()), 'freesansbold.ttf', 30, 90, 50)
+        message_display('Stamina: ' + str(game.match.player.getstamina()), 'freesansbold.ttf', 30, 110, 110)
+        pygame.display.update()
+        clock.tick(13)
+        gameExit = game.getGameExit()
 
 
 def intro():
@@ -108,9 +121,10 @@ def intro():
         display.fill(white)
         message_display('Menu', 'freesansbold.ttf', 115, displayWidth / 2, displayHeight / 2)
         button('Empezar', 400, 500, 100, 50, green, brightGreen,
-               new_game)  # Falta configurar para que solo se pueda presionar una vez
+               new_game)
         button('Salir', 850, 500, 100, 50, red, brightRed, quit_game)
         pygame.display.update()
+        clock.tick(10)
 
 
 def main():
