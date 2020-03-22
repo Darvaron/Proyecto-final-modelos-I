@@ -44,7 +44,7 @@ class Entity(ABC):
         return self.speed
 
     def setActRoom(self, actRoom):
-        self.actRoom  = actRoom
+        self.actRoom= actRoom
 
     def getActRoom(self):
         return self.actRoom

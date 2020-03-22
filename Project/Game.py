@@ -8,7 +8,7 @@ from shapely.geometry import Polygon, Point
 from Project.entities.decorator.HatUpdate import HatUpdate
 from Project.entities.decorator.AppleUpdate import AppleUpdate
 from Project.entities.decorator.SwordUpdate import SwordUpdate
-
+from Project.composite.Composite import Composite
 
 class Game:
     black = (0, 0, 0)
@@ -25,6 +25,7 @@ class Game:
         self.displayHeight = displayHeight
         self.gameExit = False
         self.match = None
+        self.doors = None
         self.create()
 
     def create(self):  # Crea la partida
@@ -36,6 +37,10 @@ class Game:
         for e in self.match.enemies:  # Setea a los enemigos en modo espera
             e.setValues(7)
         self.match.player.setValues(7)
+        #Añade composite
+        self.doors = Composite()
+        for d in self.match.doors:
+            self.doors.addPart(d)
 
     def updateMatch(self, attack, typped=[]):  # Actualiza la partida
         # self.match.player.damage = True
@@ -74,7 +79,6 @@ class Game:
             if t == 6:
                 pass
                 # self.match.player.attack(self.match.enemies, coords2)
-        # Falta hacer esto por composite
         n = 0
         for e in self.match.enemies:
             if e.body.defaultLife <= 0:
@@ -131,6 +135,12 @@ class Game:
                 elif p.power == 'sword':
                     self.match.player = SwordUpdate(self.match.player)
                 self.match.maps[self.match.player.getActRoom()].powerUps = None
+        #Puertas (Uso del composite)
+        connectsdoor, room = self.doors.verify(coords, self.match.player.getActRoom())
+        if connectsdoor:
+            self.match.player.setRoom(room)
+            self.match.player.setActRoom(room)
+            self.match.player.setposition(self.match.maps[self.match.player.getRoom()].hollows, self.displayWidth, self.displayHeight)
 
     def displayMatch(self):  # Muestra la partida
         displayedx = 0
@@ -148,9 +158,7 @@ class Game:
             pygame.gfxdraw.aapolygon(self.display, h.corners, Game.black)
             pygame.gfxdraw.filled_polygon(self.display, h.corners, Game.black)
         # Puertas
-        for door in self.match.doors:
-            if door.room == self.match.player.getActRoom():  # Si las puertas estan en la misma sala que se imprime
-                self.display.blit(door.image, (door.posx, door.posy))
+        self.doors.draw(self.display, self.match.player.getActRoom())
         # Objetos
         for o in self.match.maps[self.match.player.getActRoom()].obstacles:
             self.display.blit(o.image, (o.posx, o.posy))

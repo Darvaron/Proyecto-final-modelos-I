@@ -8,9 +8,7 @@ from shapely.geometry.polygon import Polygon
 
 
 class PowerUp:
-    #all_Powerups = [['0', 'sword'], ['1', 'bow'], ['2', 'helmet'], ['3', 'hat'], ['4', 'apple'],
-    #                ['5', 'glass']]
-    all_Powerups = [['0', 'sword']]
+    all_Powerups = [['0', 'sword'], ['3', 'hat'], ['4', 'apple']]
 
     def __init__(self, hollows, displayWidth, displayHeight):
         self.posx = 0

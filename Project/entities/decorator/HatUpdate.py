@@ -10,6 +10,9 @@ class HatUpdate(Decorator):
     def __init__(self, player):
         super(HatUpdate, self).__init__(player)
 
+    def setposition(self, hollows, displayWidth, displayHeight):
+        self._entity.setposition(hollows, displayWidth, displayHeight)
+
     def getdamageV(self):
         return self._entity.getdamageV()
 
@@ -76,10 +79,10 @@ class HatUpdate(Decorator):
         self._entity.standby()
 
     def setValues(self, choice):
-        self._entity.sprite.setValues(choice)
+        self._entity.setValues(choice)
 
     def draw(self, surface):
-        self._entity.sprite.draw(surface, self._entity.getposx(), self._entity.getposy())
+        self._entity.draw(surface)
         image = pygame.image.load('./resources/powerups/Item__3.png')
         size = image.get_rect().size
         imageWidth = size[0]

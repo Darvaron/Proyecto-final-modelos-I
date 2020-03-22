@@ -3,6 +3,7 @@
 
 import random
 import pygame
+from shapely.geometry import Polygon
 
 
 class Door:
@@ -48,5 +49,18 @@ class Door:
             self.posx = random.randint(0, displayWidth - self.imageWidth)
         Door.quantity += 1
         self.id = Door.quantity
-        print('Puerta generada en posición x :', self.posx, ', posición y:', self.posy, ', Identificador:', self.id, 'En sala',
+        print('Puerta generada en posición x :', self.posx, ', posición y:', self.posy, ', Identificador:', self.id,
+              'En sala',
               self.room)
+
+    def verify(self, coords):
+        playerRec = Polygon(coords)
+        coordsDoor = [
+            [self.posx, self.posy], [self.posx + self.imageWidth, self.posy],
+            [self.posx + self.imageWidth, self.posy + self.imageHeight], [self.posx, self.posy + self.imageHeight]
+        ]
+        polygonDoor = Polygon(coordsDoor)
+        if playerRec.intersects(polygonDoor):
+            return True
+        else:
+            return False
