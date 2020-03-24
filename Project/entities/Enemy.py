@@ -20,8 +20,8 @@ class Enemy():
         self.setPos(hollows, displayWidth, displayHeight)
 
     def setPos(self, hollows, displayWidth, displayHeight):
-        self.posx = random.randint(0, displayWidth - self.imageWidth)
-        self.posy = random.randint(0, displayHeight - self.imageHeight)
+        self.posx = random.randint(0, round(displayWidth - self.imageWidth))
+        self.posy = random.randint(0, round(displayHeight - self.imageHeight))
         pos = Point(self.posx, self.posy)
         validated = True
         for h in hollows:

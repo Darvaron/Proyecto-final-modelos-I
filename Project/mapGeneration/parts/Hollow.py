@@ -19,6 +19,8 @@ class Hollow:
         determines the number of segments used to approximate a quarter circle around a point.'''
 
         polygon = polygon.buffer(600, join_style=1).buffer(-600.0, join_style=1)
+        if polygon.__class__ == 'shapely.geometry.multipolygon.MultiPolygon':
+            self.generate_points(displayWidth, displayHeight)
         pos = polygon.exterior.coords # Salta error de multipolygon muy de vez en cuando
         self.corners = pos
         if len(self.corners) < 3:  # Si minimo no quedan 3 coordenadas

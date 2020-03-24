@@ -9,6 +9,11 @@ from Project.entities.decorator.HatUpdate import HatUpdate
 from Project.entities.decorator.AppleUpdate import AppleUpdate
 from Project.entities.decorator.SwordUpdate import SwordUpdate
 from Project.composite.Composite import Composite
+from Project.observer.PowerObtained import PowerObtained
+from Project.observer.ScreenNotifier import ScreenNotifier
+from Project.state.Opened import Opened
+from Project.state.Closed import Closed
+
 
 class Game:
     black = (0, 0, 0)
@@ -26,6 +31,8 @@ class Game:
         self.gameExit = False
         self.match = None
         self.doors = None
+        self.state = None
+        self.value = None
         self.create()
 
     def create(self):  # Crea la partida
@@ -37,12 +44,16 @@ class Game:
         for e in self.match.enemies:  # Setea a los enemigos en modo espera
             e.setValues(7)
         self.match.player.setValues(7)
-        #Añade composite
+        self.powerObtained = PowerObtained()
+        self.powerObtained.attach(ScreenNotifier())
+        self.state = Closed()
+        # Añade composite
         self.doors = Composite()
         for d in self.match.doors:
             self.doors.addPart(d)
 
     def updateMatch(self, attack, typped=[]):  # Actualiza la partida
+        self.value = 'in'
         # self.match.player.damage = True
         # Coordenadas de la hitbox de los pies del personaje
         coords = [[self.match.player.getposx() - (self.match.player.getImageWidth() / 6),
@@ -80,11 +91,14 @@ class Game:
                 pass
                 # self.match.player.attack(self.match.enemies, coords2)
         n = 0
+        z = len(self.match.enemies)
+        counter = 0
         for e in self.match.enemies:
             if e.body.defaultLife <= 0:
                 self.match.enemies.pop(n)
             else:
                 if e.room == self.match.player.getRoom():
+                    counter += 1
                     self.match.player.setlife(
                         e.attack(coords, self.match.player.getRoom(), self.match.player.getlife()))
                     e.track(self.match.player.getposx(), self.match.player.getposy(),
@@ -92,12 +106,17 @@ class Game:
                             self.match.maps[self.match.player.getRoom()].obstacles)
                 pointE = Point(e.posx, e.posy)
                 pointCharacter = Point(self.match.player.getposx(), self.match.player.getposy())
-                #Cambia la imagen en relación a la distancia
+                # Cambia la imagen en relación a la distancia
                 if pointE.distance(pointCharacter) < 300 and e.sprite.lastChoice != 5:
                     e.setValues(5)
                 elif pointE.distance(pointCharacter) >= 300 and e.sprite.lastChoice != 7:
                     e.setValues(7)
+                #z += 1
             n += 1
+        #print(z)
+        if z == 0:
+            self.gameExit = True
+            self.value = 'win'
         # Actualiza la imagen jugador
         if len(typped) > 0:
             if self.match.player.getLastChoice() != typped[-1]:
@@ -110,11 +129,12 @@ class Game:
         for h in self.match.maps[self.match.player.getActRoom()].hollows:
             polygon = Polygon(h.corners)
             if (polygonChar.intersects(polygon)):
-                print('Cambia estado a terminado, personaje muerto')
+                self.value = 'hollow'
                 self.gameExit = self.match.player.die(self.match.maps[self.match.player.getActRoom()].hollows,
                                                       self.displayWidth, self.displayHeight)
         # Si no tiene vida
         if self.match.player.getlife() <= 0:
+            self.value = 'death'
             self.gameExit = self.match.player.die(self.match.maps[self.match.player.getActRoom()].hollows,
                                                   self.displayWidth, self.displayHeight)
         # Verifica si coje algun powerup
@@ -127,20 +147,31 @@ class Game:
             polygonFeet = Polygon(coords)
             polygonUp = Polygon(coordsPower)
             if polygonUp.intersects(polygonFeet):
-                #Decorator
+                # Notifica por medio de observer
+                # Decorator
                 if p.power == 'hat':
                     self.match.player = HatUpdate(self.match.player)
+                    self.powerObtained.notifyAll('Ya no caeras en la oscuridad')
                 elif p.power == 'apple':
                     self.match.player = AppleUpdate(self.match.player)
+                    self.powerObtained.notifyAll('Correras mas rapido que nunca')
                 elif p.power == 'sword':
                     self.match.player = SwordUpdate(self.match.player)
+                    self.powerObtained.notifyAll('Tendrás un mayor alcance')
                 self.match.maps[self.match.player.getActRoom()].powerUps = None
-        #Puertas (Uso del composite)
+        # Puertas (Uso del composite)
         connectsdoor, room = self.doors.verify(coords, self.match.player.getActRoom())
+        self.imageDoor = None
+        # Uso del state
         if connectsdoor:
-            self.match.player.setRoom(room)
-            self.match.player.setActRoom(room)
-            self.match.player.setposition(self.match.maps[self.match.player.getRoom()].hollows, self.displayWidth, self.displayHeight)
+            if counter == 0:
+                self.state = Opened()
+            newroom, self.imageDoor = self.state.doorAction(room, self.match.player.getRoom(), self.match.maps[room].hollows,
+                                            self.displayWidth, self.displayHeight, self.match.player.setposition)
+            self.match.player.setRoom(newroom)
+            self.match.player.setActRoom(newroom)
+            # self.match.player.setposition(self.match.maps[self.match.player.getRoom()].hollows, self.displayWidth, self.displayHeight)
+        self.state = Closed()
 
     def displayMatch(self):  # Muestra la partida
         displayedx = 0
@@ -177,7 +208,9 @@ class Game:
         self.match.player.draw(self.display)
         # Vida y stamina
         pygame.draw.rect(self.display, Game.red, (10, 10, self.match.player.getlife() / 10, 20))
-        pygame.draw.rect(self.display, Game.blue, (10, 70, self.match.player.getstamina() / 10, 20))
+        # pygame.draw.rect(self.display, Game.blue, (10, 70, self.match.player.getstamina() / 10, 20))
+        if self.imageDoor != None:
+            self.display.blit(self.imageDoor, (150, 150))
 
     def getGameExit(self):
         return self.gameExit

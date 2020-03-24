@@ -11,6 +11,7 @@ from Project.chainResponsability.HandlerMetal import HandlerMetal
 from Project.chainResponsability.HandlerRetro import HandlerRetro
 from Project.chainResponsability.HandlerDefault import HandlerDefault
 from Project.Buttons import *
+from Project.Notes import Notes
 
 ##1366
 ##768
@@ -29,11 +30,12 @@ brightRed = (200, 0, 0)
 
 # Creating some stuff
 screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
-pygame.display.set_caption("MENU PRUEBA")
+pygame.display.set_caption('ModeloProj')
 clock = pygame.time.Clock()
-music = None
+music = 'house'
 
 pause = False
+value = None
 
 
 # Renderiza la superficie para el texto
@@ -71,6 +73,7 @@ def quit_game():
 def unpause():
     global pause
     pause = False
+    pygame.mixer.music.unpause()
 
 
 def resol1():
@@ -115,10 +118,10 @@ def setting():
         button('Retro', width / 2 - 270, height / 2 - 50, 150, 50, green, brightGreen, retro)
         button('Metal', width / 2 + 130, height / 2 - 50, 150, 50, green, brightGreen, metal)
         #Boton aceptar
-        button('Aceptar', width / 2 - 70, height / 2 + 300, 150, 50, green, brightGreen, new_game)
+        button('Aceptar', width / 2 - 70, height / 2 + 300, 150, 50, green, brightGreen, intro)
         message_display('Controles', 'freesansbold.ttf', 50, width / 2, height / 2 + 100)
-        message_display('W,A,S,D Para moverte', 'freesansbold.ttf', 50, width / 2, height / 2 + 150)
-        message_display('Click Derecho Para atacar', 'freesansbold.ttf', 50, width / 2, height / 2 + 200)
+        message_display('W,A,S,D Para moverte y P para pausa', 'freesansbold.ttf', 50, width / 2, height / 2 + 150)
+        message_display('Click Izquierdo Para atacar', 'freesansbold.ttf', 50, width / 2, height / 2 + 200)
         pygame.display.update()  # Updates only the parameter, if don't it updates all
         clock.tick(144)  # Frames per second
 
@@ -142,6 +145,7 @@ def metal():
 
 def pausef():
     global pause
+    pygame.mixer.music.pause()
     while pause:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -158,6 +162,123 @@ def pausef():
         pygame.display.update()
         clock.tick(10)
 
+def win():
+    intro = True
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit_game()
+            if event.type == pygame.VIDEORESIZE:
+                global screen, width, height
+                screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+                width, height = event.size
+                if width < 600:
+                    width = 600
+                if height < 400:
+                    height = 400
+                screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
+
+        screen.fill(white)
+        message_display('Ganaste', 'freesansbold.ttf', 115, int(screen.get_width() / 2),
+                        int((screen.get_height() / 2) - 100))
+
+        # Load Button Images
+        play1 = pygame.image.load("resources/buttons/jugarIna.png")
+        play2 = pygame.image.load("resources/buttons/jugarAct.png")
+
+        exit1 = pygame.image.load("resources/buttons/salirIna.png")
+        exit2 = pygame.image.load("resources/buttons/salirAct.png")
+
+        # Generate Button
+        playButton = Buttons(play1, play2, round((screen.get_width() / 2) - 100), round((screen.get_height() / 2)) - 50,
+                             screen, new_game)
+        playButton.update()
+
+        exitButton = Buttons(exit1, exit2, round((screen.get_width() / 2) - 100),
+                             round((screen.get_height() / 2)) + 110, screen, quit_game)
+        exitButton.update()
+
+        pygame.display.update()
+        clock.tick(15)
+
+def death():
+    intro = True
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit_game()
+            if event.type == pygame.VIDEORESIZE:
+                global screen, width, height
+                screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+                width, height = event.size
+                if width < 600:
+                    width = 600
+                if height < 400:
+                    height = 400
+                screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
+
+        screen.fill(white)
+        message_display('Te han matado', 'freesansbold.ttf', 115, int(screen.get_width() / 2),
+                        int((screen.get_height() / 2) - 100))
+
+        # Load Button Images
+        play1 = pygame.image.load("resources/buttons/jugarIna.png")
+        play2 = pygame.image.load("resources/buttons/jugarAct.png")
+
+        exit1 = pygame.image.load("resources/buttons/salirIna.png")
+        exit2 = pygame.image.load("resources/buttons/salirAct.png")
+
+        # Generate Button
+        playButton = Buttons(play1, play2, round((screen.get_width() / 2) - 100), round((screen.get_height() / 2)) - 50,
+                             screen, new_game)
+        playButton.update()
+
+        exitButton = Buttons(exit1, exit2, round((screen.get_width() / 2) - 100),
+                             round((screen.get_height() / 2)) + 110, screen, quit_game)
+        exitButton.update()
+
+        pygame.display.update()
+        clock.tick(15)
+
+def hollow():
+    intro = True
+    while intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit_game()
+            if event.type == pygame.VIDEORESIZE:
+                global screen, width, height
+                screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+                width, height = event.size
+                if width < 600:
+                    width = 600
+                if height < 400:
+                    height = 400
+                screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
+
+        screen.fill(white)
+        message_display('Has caido en un agujero', 'freesansbold.ttf', 115, int(screen.get_width() / 2),
+                        int((screen.get_height() / 2) - 100))
+
+        # Load Button Images
+        play1 = pygame.image.load("resources/buttons/jugarIna.png")
+        play2 = pygame.image.load("resources/buttons/jugarAct.png")
+
+        exit1 = pygame.image.load("resources/buttons/salirIna.png")
+        exit2 = pygame.image.load("resources/buttons/salirAct.png")
+
+        # Generate Button
+        playButton = Buttons(play1, play2, round((screen.get_width() / 2) - 100), round((screen.get_height() / 2)) - 50,
+                             screen, new_game)
+        playButton.update()
+
+        exitButton = Buttons(exit1, exit2, round((screen.get_width() / 2) - 100),
+                             round((screen.get_height() / 2)) + 110, screen, quit_game)
+        exitButton.update()
+
+        pygame.display.update()
+        clock.tick(15)
+
 
 def new_game():
     global pause
@@ -168,8 +289,9 @@ def new_game():
     for m in range(len(handlers)-1):
         handlers[m].setSucc(handlers[m + 1])
     handlers[0].handlerRequest(music)
-    print(handlers[0].handlerRequest(music))
+    #print(handlers[0].handlerRequest(music))
     while not gameExit:
+        global value
         # Input
         typped = []
         for event in pygame.event.get():
@@ -195,10 +317,18 @@ def new_game():
         game.updateMatch(attack, typped)
         game.displayMatch()
         message_display('Vida: ' + str(game.match.player.getlife()), 'freesansbold.ttf', 30, 90, 50)
-        message_display('Stamina: ' + str(game.match.player.getstamina()), 'freesansbold.ttf', 30, 110, 110)
+        #message_display('Stamina: ' + str(game.match.player.getstamina()), 'freesansbold.ttf', 30, 110, 110)
+        if Notes.getNote() != None:
+            message_display('Ultimo Poder: ' + Notes.getNote(), 'freesansbold.ttf', 30, width / 2, 50)
         pygame.display.update()
         clock.tick(13)
         gameExit = game.getGameExit()
+    if game.value == 'hollow':
+        hollow()
+    elif game.value == 'death':
+        death()
+    else:
+        win()
 
 
 def intro():

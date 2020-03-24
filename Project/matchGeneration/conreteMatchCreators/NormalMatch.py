@@ -10,6 +10,9 @@ from Project.mapGeneration.parts.Door import Door
 from Project.entities.Enemy import Enemy
 from Project.abstractFactory.factories.SlimeFactory import SlimeFactory
 from Project.entities.decorator.Player import Player
+from Project.abstractFactory.factories.SpiderFactory import SpiderFactory
+from Project.command.Invoker import Invoker
+from Project.command.CreateParts import CreateParts
 
 class NormalMatch(MatchBuilder):  # Construye una partida normal
 
@@ -20,7 +23,7 @@ class NormalMatch(MatchBuilder):  # Construye una partida normal
         map = []
         Door.quantity = 0
         Map.quantity = 0
-        quantity = random.randint(2, 8)
+        quantity = random.randint(2, 4)
         for n in range(quantity):
             # Mapa generado mediante builder
             mapDirector = MapDir()
@@ -52,16 +55,22 @@ class NormalMatch(MatchBuilder):  # Construye una partida normal
         self.delete_empty(self)
 
     def createEnemies(self, maps, displayWidth, displayHeight):
-        quantity = random.randint(0, 4);
+        quantity = random.randint(1, 4);
         enemies = []
         mNumber = 0
         for m in maps:
             for e in range(quantity):
                 fac = None
-                factDecision = random.randint(0, 0)  # Valor a cambiar cuando existan mas fabricas de partes
+                factDecision = random.randint(0, 1)  # Valor a cambiar cuando existan mas fabricas de partes
                 if factDecision == 0: #Usamos abstract factory
                     fac = SlimeFactory()
-                enemy = Enemy(fac.createBody(), fac.createSprite(), m.hollows, displayWidth, displayHeight, mNumber, True)
+                else:
+                    fac = SpiderFactory()
+                #Uso de command
+                command = CreateParts(fac)
+                invoker = Invoker(command)
+                body, sprite = invoker.run()
+                enemy = Enemy(body, sprite, m.hollows, displayWidth, displayHeight, mNumber, True)
                 enemies.append(enemy)
             mNumber += 1
         self.match.setEnemies(enemies)

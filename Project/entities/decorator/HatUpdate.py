@@ -71,7 +71,7 @@ class HatUpdate(Decorator):
         return self._entity.attack(enemies, coords, coords2)
 
     def die(self, hollows, displayWidth, displayHeight):  # Da una vida extra, da vida infinitas toca arreglar
-        self._entity.setlife(2000)
+        #self._entity.setlife(2000)
         self._entity.setposition(hollows, displayWidth, displayHeight)
         return False
 
