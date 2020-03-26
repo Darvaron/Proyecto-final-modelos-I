@@ -6,7 +6,7 @@ from Project.mapGeneration.MapCreator import MapCreator
 from Project.mapGeneration.parts.Hollow import Hollow
 from Project.mapGeneration.parts.Obstacle import Obstacle
 from Project.mapGeneration.parts.Door import Door
-from Project.mapGeneration.parts.PowerUp import PowerUp
+from Project.mapGeneration.parts.concretePowerups.PowerUpFactory import PowerUpFactory
 from shapely.geometry.polygon import Polygon
 import pygame
 
@@ -42,9 +42,12 @@ class defaultMap(MapCreator):
         print('Puertas generadas:', quantity)
 
     def build_power_up(self, displayWidth, displayHeight):
+        all_Powerups = ['sword', 'hat', 'apple']
+        case = random.choice(all_Powerups)
         quantity = random.randint(0, 1)
         for n in range(quantity):
-            self.map.set_powerups(PowerUp(self.map.hollows, displayWidth, displayHeight))
+            fac = PowerUpFactory()
+            self.map.set_powerups(fac.get_powerUp(case, self.map.hollows, displayWidth, displayHeight))
 
     def build_extras(self):
         choice = random.randint(0, 1)

@@ -13,6 +13,7 @@ la generacion de la partida (matchGeneration) debido a que estan compuesto de va
 - Observer: Usado para desplegar información al agarrar un poder.  
 - State: Manejo de las puertas, si todos los enemigos estan muertos cambia el estado del juego permitiendo asi el cambio de sala.  
 - Command: Patron usado para el manejo de las fabricas del abstract factory, en la clase NormalMatch  
+- Factory Method: Patron usado para la creación de los powerups, se encuentra en la carpeta mapGeneration/parts/concretePowerups, fue usado para permitir en tiempo de ejecucción la instanciación de una u otro power.
 
 
 ¿En que consiste el juego?  
