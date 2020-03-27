@@ -15,6 +15,22 @@ la generacion de la partida (matchGeneration) debido a que estan compuesto de va
 - Command: Patron usado para el manejo de las fabricas del abstract factory, en la clase NormalMatch  
 - Factory Method: Patron usado para la creación de los powerups, se encuentra en la carpeta mapGeneration/parts/concretePowerups, fue usado para permitir en tiempo de ejecucción la instanciación de una u otro power.
 
+No se usaron los siguientes patrones:  
+- Prototype: No se usó ya que poseiamos enemigos mediante otro patrón y los queriamos lo más independientes posibles puesto que se verificaria su muerte al final de la sala además de que la generación de enemigos es aleatoría por ende no se podría clonar siempre al mismo enemigo.
+- Singleton: No se usó puesto que todo fue facíl de instanciar mediante los accesos entre clases.
+- Adapter: No se usó puesto que no tuvimos una interfaz de una clase distinta la cual adaptar.
+- Bridge: No se usó ya que no queriamos desvincular la abstracción de la implementación.
+- Facade: Nuestro programa no posee un conjunto de subinterfaces que deban ser unificadas en una sola de alto nivel.
+- Flyweight: No necesitamos el hecho de crear un objeto intermedio para cada entidad que ibamos a usar, pues unas heredaban a las otras.
+- Proxy: No lo usamos puesto que no necesitabamos un representante de acceso a otro objeto.
+- Interpreter: No lo vimos necesario puesto que define una representación gramática y su interprete, cosa que no hay en este juego.
+- Iterator: No se usó puesto que accedimos a los array de elementos o colecciones de objetos de otra forma.
+- Mediator: No se hizo uso de una clase mediadora para la comunicación enre objetos.
+- Memento: No se hizo uso de la restauración de un objeto a estados anteriores.
+- Strategy: No fue necesario la agregación de estrategias para manejar un objeto, lo hicimos a través de otro patrón.
+- Template Method: No se hizo uso de una plantilla por lo que se recurrio a la herencia normal.
+- Visitor: No se implementaron funcionalidades adicionales a clases por esto no se usó.
+
 
 ¿En que consiste el juego?  
 El juego consiste en eliminar a todos los enemigos del mapa, el mapa esta compuesto por varias sala que estan unidas entre si por puertas, que solo se desbloquean si la sala actual no tiene enemigos, es decir que todos los enemigos
